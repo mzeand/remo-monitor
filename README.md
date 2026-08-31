@@ -1,32 +1,32 @@
 # remo-monitor
 
-Nature Remo LapisからCloud API経由で最新の温度・湿度を取得し、JSONで出力するGo CLIです。
+A Go CLI that retrieves the latest temperature and humidity readings from a Nature Remo Lapis via the Cloud API and outputs them as JSON.
 
-現時点では、定期実行およびAWS IoT CoreへのMQTT送信は実装していません。
+Scheduled execution and MQTT publishing to AWS IoT Core are not currently implemented.
 
-## 必要なもの
+## Requirements
 
-- Go 1.25以降
-- Nature Remo Cloud APIのアクセストークン
+- Go 1.25 or later
+- A Nature Remo Cloud API access token
 
-アクセストークンは[Nature Remoのホーム画面](https://home.nature.global/)から発行します。
+You can generate an access token from the [Nature Remo home page](https://home.nature.global/).
 
-## 実行
+## Usage
 
-登録デバイスが1台の場合:
+If you have one registered device:
 
 ```sh
 NATURE_REMO_TOKEN="your-access-token" go run ./cmd/remo-monitor
 ```
 
-複数台の場合は名前またはIDで選択します。
+If you have multiple devices, select one by name or ID:
 
 ```sh
 NATURE_REMO_TOKEN="your-access-token" go run ./cmd/remo-monitor -device-name "Living Room"
 NATURE_REMO_TOKEN="your-access-token" go run ./cmd/remo-monitor -device-id "device-id"
 ```
 
-出力例:
+Example output:
 
 ```json
 {
@@ -38,24 +38,24 @@ NATURE_REMO_TOKEN="your-access-token" go run ./cmd/remo-monitor -device-id "devi
 }
 ```
 
-`measured_at`には、温度と湿度のうち新しい方の測定日時を出力します。ログとエラーは標準エラー出力へ送られます。
+`measured_at` contains the more recent timestamp of the temperature and humidity readings. Logs and errors are written to standard error.
 
-## テスト
+## Testing
 
 ```sh
 go test ./...
 go vet ./...
 ```
 
-## ビルド
+## Building
 
-ローカル向け:
+For your local platform:
 
 ```sh
 go build -o remo-monitor ./cmd/remo-monitor
 ```
 
-64-bit Raspberry Pi向け:
+For a 64-bit Raspberry Pi:
 
 ```sh
 GOOS=linux GOARCH=arm64 go build -o remo-monitor-linux-arm64 ./cmd/remo-monitor
