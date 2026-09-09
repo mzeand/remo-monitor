@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/mzeand/remo-monitor/internal/influxdb"
 	"github.com/mzeand/remo-monitor/internal/remo"
 )
 
@@ -37,6 +38,16 @@ func run() int {
 		return 2
 	}
 
+	address := os.Getenv("INFLUXDB_URL")
+	if address == "" {
+		address = "http://localhost:8086"
+	}
+	store, err := influxdb.NewClient(http.DefaultClient, address, os.Getenv("INFLUXDB_TOKEN"), os.Getenv("INFLUXDB_ORG"), os.Getenv("INFLUXDB_BUCKET"))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		return 2
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	defer cancel()
 
@@ -48,6 +59,13 @@ func run() int {
 		} else {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		}
+		return 1
+	}
+
+	writeCtx, writeCancel := context.WithTimeout(context.Background(), requestTimeout)
+	defer writeCancel()
+	if err := store.WriteReading(writeCtx, reading); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		return 1
 	}
 

@@ -30,3 +30,6 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+/remo-monitor
+/remo-monitor-linux-arm64
