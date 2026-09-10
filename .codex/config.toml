@@ -1,0 +1,18 @@
+# Project defaults for local Codex sessions. See README.md for scope and limits.
+approval_policy = "on-request"
+approvals_reviewer = "user"
+sandbox_mode = "workspace-write"
+allow_login_shell = false
+
+[sandbox_workspace_write]
+network_access = false
+writable_roots = []
+
+[shell_environment_policy]
+ignore_default_excludes = false
+
+[shell_environment_policy.filters]
+"*PASSWORD*" = "exclude"
+"*CREDENTIAL*" = "exclude"
+"NATURE_REMO_*" = "exclude"
+"INFLUXDB_*" = "exclude"

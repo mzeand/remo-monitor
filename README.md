@@ -128,3 +128,25 @@ INFLUXDB_INTEGRATION=1 go test ./internal/influxdb -run TestIntegrationWriteAndQ
 This writes a synthetic reading and queries it back, checking device ID, timestamp,
 temperature, and humidity. Use a dedicated test bucket; test points are retained.
 Without `INFLUXDB_INTEGRATION=1`, normal tests require no server or credentials.
+
+## Codex security settings
+
+The repository's `.codex/config.toml` sets local Codex defaults: workspace-write
+sandboxing, disabled sandbox network access, user-reviewed escalation requests,
+disabled login shells, and secret environment-variable filtering. Temporary
+directories remain writable for development tools.
+
+Start a new Codex session in this trusted project to load the configuration.
+Check the active permissions in the client; existing sessions are not proof that
+the new defaults are active. CLI overrides and managed policies can change the
+effective settings. These are project defaults, not enforced organization policy.
+
+Environment filtering does not prevent reading `.env` or explicitly loading it.
+Use a checkout without production secrets for stronger separation. Browser and
+connector access have separate controls. Network-dependent Go toolchain downloads
+may require approval; run live collection and integration tests deliberately with
+test credentials. If Go is configured only in a login startup file, make it
+available on the parent process's `PATH`.
+
+See the official [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
+and [configuration precedence](https://learn.chatgpt.com/docs/config-file/config-basic).
