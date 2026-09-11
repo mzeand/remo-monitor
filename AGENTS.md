@@ -92,3 +92,179 @@ documentation together.
 - Do not commit generated binaries, coverage output, or local logs. Keep changes
   focused and update `README.md` and `.env.example` when usage or configuration
   changes.
+
+## General rules
+
+- Prefer simple and explicit implementations.
+- Follow existing project structure and conventions.
+- Do not make unrelated refactors.
+- Keep changes as small as reasonably possible.
+- Explain significant architectural changes before implementing them.
+
+## Security rules
+
+### Secrets
+
+Do not read, modify, or copy secrets unless the user explicitly authorizes the
+specific operation. Never commit secrets or expose their values in output.
+
+This includes:
+
+- `.env`
+- `.env.*`
+- API tokens
+- Nature Remo access tokens
+- AWS credentials
+- SSH private keys
+- passwords
+- authentication cookies
+- credential files
+
+Placeholder-only templates such as `.env.example` are excluded from this
+restriction and may be read and updated for the requested task.
+
+Do not print secrets to logs, terminal output, tests, examples, or documentation.
+
+If configuration is required, use placeholders such as:
+
+    NATURE_REMO_TOKEN=<your-token>
+
+Authorization to use credentials for a live operation does not authorize
+displaying their values.
+
+### External systems
+
+Do not access authenticated external services, private remote systems, or live
+operational environments without explicit user approval for the operation.
+
+This includes:
+
+- Nature Remo API
+- AWS
+- AWS IoT Core
+- production services
+- remote databases
+- external MQTT brokers
+- Raspberry Pi devices
+- remote hosts via SSH
+
+Localhost services used for development are allowed.
+
+Reading public documentation and downloading public Go toolchains or dependencies
+needed for development are allowed without additional task confirmation. These
+exceptions do not permit uploading secrets or private repository content, or
+bypass the dependency rules below. Use the harness's approval mechanism whenever
+sandbox or network restrictions require escalation.
+
+### Destructive operations
+
+Do not perform destructive operations without explicit user approval.
+
+Examples include:
+
+- `rm -rf`
+- deleting directories recursively
+- deleting Docker volumes
+- deleting database data
+- dropping databases or tables
+- `docker system prune`
+- `docker volume prune`
+- modifying or deleting production resources
+
+Prefer non-destructive alternatives.
+
+### Git
+
+Do not perform repository-changing Git operations unless explicitly requested.
+
+In particular, do not run:
+
+- `git push`
+- `git push --force`
+- `git reset --hard`
+- `git clean -fd`
+- `git checkout -- .`
+- `git restore .`
+- history rewriting commands
+
+Reading repository history and status is allowed.
+
+Allowed examples:
+
+- `git status`
+- `git diff`
+- `git log`
+- `git show`
+
+Do not commit changes unless explicitly requested.
+
+### Dependencies
+
+Do not add, remove, or upgrade dependencies without explaining the reason first.
+
+For Go projects, changes to `go.mod` or `go.sum` caused by necessary build or
+test operations should be reviewed before being kept.
+
+Avoid introducing a dependency when the Go standard library is sufficient.
+
+## Allowed development operations
+
+The following operations are generally safe and may be performed without
+additional confirmation:
+
+- reading source code
+- searching the repository
+- editing source code related to the requested task
+- `go test ./...`
+- `go vet ./...`
+- `go fmt`
+- `gofmt`
+- local builds
+- static analysis
+- reading Git history
+- inspecting Docker configuration
+- querying local development services
+
+Do not intentionally modify persistent application data while testing.
+As an exception, a user-authorized InfluxDB integration test may write synthetic
+data to a dedicated test bucket, as described above. Those test points are
+retained; this exception does not authorize writes to production buckets or
+deletion of existing data.
+
+## Go guidelines
+
+- Prefer the Go standard library when practical.
+- Handle errors explicitly.
+- Avoid hidden global state.
+- Keep packages focused.
+- Prefer small interfaces defined by consumers.
+- Keep configuration outside source code.
+- Never hard-code credentials.
+
+## Docker and databases
+
+Docker commands that start or stop local development containers are allowed.
+
+Do not:
+
+- remove volumes
+- prune Docker resources
+- delete persistent database data
+- recreate databases destructively
+
+without explicit approval.
+
+For database migrations, explain destructive schema changes before applying them.
+
+## When uncertain
+
+If an operation could:
+
+- expose credentials,
+- delete user data,
+- affect an external service beyond the public reads and downloads allowed above,
+- create costs,
+- modify remote infrastructure,
+- rewrite Git history,
+
+stop and ask for confirmation before executing it.
