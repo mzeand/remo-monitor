@@ -101,6 +101,11 @@ documentation together.
 - Keep changes as small as reasonably possible.
 - Explain significant architectural changes before implementing them.
 
+## Language conventions
+
+- Write commit messages, code comments, and repository documentation in English.
+- Adapt conversations with the agent to the user's language and stated preferences.
+
 ## Security rules
 
 ### Secrets
