@@ -95,6 +95,8 @@ documentation together.
 
 ## General rules
 
+- Inspect git status and relevant diffs before editing.
+- Preserve existing user changes and never revert unrelated modifications.
 - Prefer simple and explicit implementations.
 - Follow existing project structure and conventions.
 - Do not make unrelated refactors.
