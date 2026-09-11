@@ -117,6 +117,14 @@ The wrapper resolves the binary and `.env` relative to its own location. The hos
 and InfluxDB must be running. Each API operation has a 10-second timeout; failures
 exit nonzero and appear in the log. Configure host log rotation for long-term use.
 
+## Continuous integration
+
+The GitHub Actions workflow in `.github/workflows/ci.yml` runs on pull requests,
+pushes to `main`, and manual dispatch. It uses the Go version from `go.mod` to
+check Go formatting, shell syntax, unit tests, static analysis, and the CLI build.
+The workflow requires no application secrets and disables the live InfluxDB
+integration test. It does not run the collector or start database services.
+
 ## Integration test
 
 Against a running InfluxDB, export the connection variables above and run:
